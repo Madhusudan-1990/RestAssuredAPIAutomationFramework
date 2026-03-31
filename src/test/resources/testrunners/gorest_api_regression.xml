@@ -1,10 +1,7 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
 
-<suite name="API Regression Test Suite" verbose="4"> 
+<suite name="Go Rest API Regression Test Suite" verbose="4"> 
 
-<listeners>
-	<listener class-name = "com.aventstack.chaintest.plugins.ChainTestListener" />
-</listeners>
     <test name="Go Rest API Test - Create User">
         <classes>
             <class name="com.qa.api.gorest.tests.CreateUserTest"/>
@@ -28,16 +25,5 @@
             <class name="com.qa.api.gorest.tests.DeleteUserTest"/>
               </classes>
     </test>   
-    
-     <test name="Product API Test - Get Product">
-        <classes>
-            <class name="com.qa.api.products.tests.ProductAPITest"/>
-              </classes>
-    </test>      
-     <test name="Product API Test - Get Product With Json">
-        <classes>
-            <class name="com.qa.api.products.tests.ProductAPIWithJsonPathTest"/>
-              </classes>
-    </test>      
-
+   
 </suite>

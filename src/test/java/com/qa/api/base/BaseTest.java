@@ -1,9 +1,13 @@
 package com.qa.api.base;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
-//3
 
 import com.qa.api.client.RestClient;
+
+import io.qameta.allure.restassured.AllureRestAssured;
+import io.restassured.RestAssured;
+
+//@Listeners(ChainTestListener.class)
 public class BaseTest 
 {
 	protected RestClient restClient;
@@ -16,6 +20,7 @@ public class BaseTest
 	protected final static String BASE_URL_PRODUCTS = "https://fakestoreapi.com";
 	protected final static String BASE_URL_SPOTIFY_ACCOUNT = "https://accounts.spotify.com";
 	protected final static String BASE_URL_SPOTIFY_API = "https://api.spotify.com";
+	protected final static String BASE_URL_ERGAST_CIRCUIT = "http://ergast.com";
 	
 	
 	//****************************** API EndPoints *******************************/
@@ -27,6 +32,13 @@ public class BaseTest
 	protected final static String PRODUCTS_ENDPOINT = "/products";
 	protected final static String SPOTIFY_ACCOUNT_ENDPOINT = "/api/token";
 	protected final static String SPOTIFY_API_ENDPOINT = "/v1/albums/4aawyAB9vmqN3uQ7FjRGTy";
+	protected final static String ERGAST_CIRCUIT_ENDPOINT = "/api/f1/2017/circuits.xml";
+	
+	@BeforeSuite
+	public void setupAllureReport()
+	{
+		RestAssured.filters(new AllureRestAssured());
+	}
 	
 	//3a
 	@BeforeTest
