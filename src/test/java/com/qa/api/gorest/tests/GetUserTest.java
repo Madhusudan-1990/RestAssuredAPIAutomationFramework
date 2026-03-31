@@ -14,6 +14,7 @@ import io.restassured.response.Response;
 
 //4
 public class GetUserTest extends BaseTest {
+	
 	@Test
 	public void getAllUsersTest() {
 		Response response = restClient.get(BASE_URL_GOREST, GOREST_USERS_ENDPOINT, null, null, AuthType.BEARER_TOKEN,

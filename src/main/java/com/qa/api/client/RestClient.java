@@ -1,6 +1,8 @@
 package com.qa.api.client;
 
 import java.io.File;
+import java.io.ObjectInputFilter.Config;
+import java.util.Base64;
 import java.util.Map;
 
 import com.qa.api.constants.AuthType;
@@ -23,7 +25,9 @@ public class RestClient
 	// 1d Define Response Specs:
 	private ResponseSpecification responseSpec200 =  expect().statusCode(200); // Already expect() method coming static import
 	private ResponseSpecification responseSpec201 =  expect().statusCode(201);
+	private ResponseSpecification responseSpec204 =  expect().statusCode(204);
 	private ResponseSpecification responseSpec400 =  expect().statusCode(400);
+	private ResponseSpecification responseSpec404 =  expect().statusCode(404);
 	private ResponseSpecification responseSpec200or201 =  expect().statusCode(anyOf(equalTo(200),equalTo(201)));
 	private ResponseSpecification responseSpec200or404 =  expect().statusCode(anyOf(equalTo(200),equalTo(404)));
 	//1a
@@ -39,11 +43,8 @@ public class RestClient
 		case BEARER_TOKEN:
 				request.header("Authorization", "Bearer "+ ConfigManager.get("bearertoken"));
 				break;
-		case OAUTH2:
-			request.header("Authorization", "Bearer "+ "some token");
-			break;
 		case BASIC_AUTH:
-			request.header("Authorization", "Basic "+ "some token");
+			request.header("Authorization", "Basic "+ generateBasicAuthToken());
 			break;
 		case API_KEY:
 			request.header("x-api-key", "Basic "+ "api key");
@@ -58,6 +59,14 @@ public class RestClient
 				
 		}
 		return request;
+	}
+	
+	private String generateBasicAuthToken()
+	{
+		String credentials = ConfigManager.get("basicauthusername") + ":" + ConfigManager.get("basicauthpassword");
+		//admin:admin --> ""
+		return Base64.getEncoder().encodeToString(credentials.getBytes());
+	
 	}
 	
 	//1b
@@ -121,7 +130,7 @@ public class RestClient
 	{
 		  RequestSpecification request= setupRequest(baseUrl, authType, contentType); // Calling setupRequest Method
 		  applyParams(request, queryParams, pathParams);
-		  Response response = request.body(body).post(endPoint).then().spec(responseSpec201).extract().response();
+		  Response response = request.body(body).post(endPoint).then().spec(responseSpec200or201).extract().response();
 		  response.prettyPrint();
 		     return response;
 	}
@@ -133,12 +142,105 @@ public class RestClient
 	{
 		  RequestSpecification request= setupRequest(baseUrl, authType, contentType); // Calling setupRequest Method
 		  applyParams(request, queryParams, pathParams);
-		  Response response = request.body(file).post(endPoint).then().spec(responseSpec201).extract().response();
+		  Response response = request.body(file).post(endPoint).then().spec(responseSpec200or201).extract().response();
+		  response.prettyPrint();
+		     return response;
+	}
+	public Response post(String baseUrl, String endPoint,
+			String grantType,
+			String clientId,
+			String clientSecret,
+			ContentType contentType)
+	{
+		
+		Response  response = RestAssured.given().log().all()
+		 				.contentType(contentType)
+		 				.formParam("grant_type", grantType)
+		 				.formParam("client_id", clientId)
+		 				.formParam("client_secret", clientSecret)
+		 				.when()
+		 					.post(baseUrl+endPoint);
+		response.prettyPrint();
+		return response;
+	}
+	
+	//1e PUT
+	/**
+	 * This method is used to call Put Calls
+	 * @param <T>
+	 * @param baseUrl
+	 * @param endPoint
+	 * @param body
+	 * @param queryParams
+	 * @param pathParams
+	 * @param authType
+	 * @param contentType
+	 * @return
+	 */
+	public<T> Response put(String baseUrl, String endPoint,T body, // 'T' is the Reserved keyword in java which takes any Type like Pojo,String,Lombok except File object. We have to give 'T' in the generics. 
+			Map<String, String> queryParams,
+			Map<String, String> pathParams,
+			AuthType authType,
+			ContentType contentType)
+	{
+		  RequestSpecification request= setupRequest(baseUrl, authType, contentType); // Calling setupRequest Method
+		  applyParams(request, queryParams, pathParams);
+		  Response response = request.body(body).put(endPoint).then().spec(responseSpec200).extract().response();
 		  response.prettyPrint();
 		     return response;
 	}
 	
-	
+	//1f Patch
+		/**
+		 * This method is used to call Patch Calls
+		 * @param <T>
+		 * @param baseUrl
+		 * @param endPoint
+		 * @param body
+		 * @param queryParams
+		 * @param pathParams
+		 * @param authType
+		 * @param contentType
+		 * @return
+		 */
+		public<T> Response patch(String baseUrl, String endPoint,T body, // 'T' is the Reserved keyword in java which takes any Type like Pojo,String,Lombok except File object. We have to give 'T' in the generics. 
+				Map<String, String> queryParams,
+				Map<String, String> pathParams,
+				AuthType authType,
+				ContentType contentType)
+		{
+			  RequestSpecification request= setupRequest(baseUrl, authType, contentType); // Calling setupRequest Method
+			  applyParams(request, queryParams, pathParams);
+			  Response response = request.body(body).patch(endPoint).then().spec(responseSpec200).extract().response();
+			  response.prettyPrint();
+			     return response;
+		}
+		
+		//1g Delete
+				/**
+				 * This method is used to call Delete Calls
+				 * @param <T>
+				 * @param baseUrl
+				 * @param endPoint
+				 * @param body
+				 * @param queryParams
+				 * @param pathParams
+				 * @param authType
+				 * @param contentType
+				 * @return
+				 */
+				public<T> Response delete(String baseUrl, String endPoint, // 'T' is the Reserved keyword in java which takes any Type like Pojo,String,Lombok except File object. We have to give 'T' in the generics. 
+						Map<String, String> queryParams,
+						Map<String, String> pathParams,
+						AuthType authType,
+						ContentType contentType)
+				{
+					  RequestSpecification request= setupRequest(baseUrl, authType, contentType); // Calling setupRequest Method
+					  applyParams(request, queryParams, pathParams);
+					  Response response = request.delete(endPoint).then().spec(responseSpec204).extract().response();
+					  response.prettyPrint();
+					     return response;
+				}
 	
 	
 }

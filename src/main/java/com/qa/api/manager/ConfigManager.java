@@ -27,7 +27,7 @@ public class ConfigManager
 	//2b Return key
 	public static String get(String key)
 	{
-		return properties.getProperty(key);
+		return properties.getProperty(key).trim();
 	}
 	
 	//2c Set key and Value

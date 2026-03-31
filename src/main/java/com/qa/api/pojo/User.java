@@ -1,5 +1,8 @@
 package com.qa.api.pojo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +12,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(Include.NON_NULL) // This NON_NULL is added not to include the property if its null as part of the response body. Eg id is null. This helps in deser
 public class User 
 {
+	private Integer id; 
 	private String name;
 	private String email;
 	private String gender;
