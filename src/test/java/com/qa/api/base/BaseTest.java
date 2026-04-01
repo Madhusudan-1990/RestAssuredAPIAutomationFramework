@@ -1,7 +1,6 @@
 package com.qa.api.base;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.BeforeTest;
 
 import com.qa.api.client.RestClient;
 
