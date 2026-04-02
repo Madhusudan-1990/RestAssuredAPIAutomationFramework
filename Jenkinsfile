@@ -41,7 +41,7 @@ stages {
                     )
                     if (status != 0) {
                         currentBuild.result = 'UNSTABLE'
-                        echo "DEV failures are expected ✅"
+                        echo "DEV failures are expected"
                     }
                 }
             }
@@ -58,7 +58,7 @@ stages {
                     )
                     if (status != 0) {
                         currentBuild.result = 'UNSTABLE'
-                        echo "QA failures are expected ✅"
+                        echo "QA failures are expected"
                     }
                 }
             }
@@ -75,7 +75,7 @@ stages {
                     )
                     if (status != 0) {
                         currentBuild.result = 'UNSTABLE'
-                        echo "STAGE failures are expected ✅"
+                        echo "STAGE failures are expected"
                     }
                 }
             }
@@ -85,7 +85,6 @@ stages {
     stage('Sanity API Test - PROD') {
         steps {
             dir('api-framework') {
-                // ❗ No catch, no returnStatus → must pass
                 bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml -Denv=prod"
             }
         }
@@ -97,14 +96,15 @@ post {
         echo "Pipeline completed"
     }
     success {
-        echo "PROD passed ✅"
+        echo "PROD passed"
     }
     unstable {
         echo "Non-prod failures occurred (expected)"
     }
     failure {
-        echo "PROD failed ❌"
+        echo "PROD failed"
     }
 }
+
 
 }
