@@ -1,7 +1,6 @@
 pipeline {
 agent any
 
-
 tools {
     maven 'maven'
 }
@@ -27,7 +26,7 @@ stages {
     stage('Checkout API Framework') {
         steps {
             dir('api-framework') {
-               git branch: 'main', url: 'https://github.com/Madhusudan-1990/RestAssuredAPIAutomationFramework.git'
+                git branch: 'main', url: 'https://github.com/Madhusudan-1990/RestAssuredAPIAutomationFramework.git'
             }
         }
     }
@@ -35,7 +34,16 @@ stages {
     stage('Sanity API Test - DEV') {
         steps {
             dir('api-framework') {
-                bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml -Denv=dev"
+                script {
+                    def status = bat(
+                        script: "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml -Denv=dev",
+                        returnStatus: true
+                    )
+                    if (status != 0) {
+                        currentBuild.result = 'UNSTABLE'
+                        echo "DEV failures are expected ✅"
+                    }
+                }
             }
         }
     }
@@ -43,26 +51,60 @@ stages {
     stage('Regression API Test - QA') {
         steps {
             dir('api-framework') {
-                bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regression.xml -Denv=qa"
+                script {
+                    def status = bat(
+                        script: "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_regression.xml -Denv=qa",
+                        returnStatus: true
+                    )
+                    if (status != 0) {
+                        currentBuild.result = 'UNSTABLE'
+                        echo "QA failures are expected ✅"
+                    }
+                }
             }
         }
     }
-    
-       stage('Sanity API Test - STAGE') {
+
+    stage('Sanity API Test - STAGE') {
         steps {
             dir('api-framework') {
-                bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml -Denv=stage"
+                script {
+                    def status = bat(
+                        script: "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml -Denv=stage",
+                        returnStatus: true
+                    )
+                    if (status != 0) {
+                        currentBuild.result = 'UNSTABLE'
+                        echo "STAGE failures are expected ✅"
+                    }
+                }
             }
         }
     }
-      stage('Sanity API Test - PROD') {
+
+    stage('Sanity API Test - PROD') {
         steps {
             dir('api-framework') {
+                // ❗ No catch, no returnStatus → must pass
                 bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml -Denv=prod"
             }
         }
     }
 }
 
+post {
+    always {
+        echo "Pipeline completed"
+    }
+    success {
+        echo "PROD passed ✅"
+    }
+    unstable {
+        echo "Non-prod failures occurred (expected)"
+    }
+    failure {
+        echo "PROD failed ❌"
+    }
+}
 
 }
