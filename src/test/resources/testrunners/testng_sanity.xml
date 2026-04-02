@@ -2,10 +2,19 @@
 
 <suite name="Sanity Suite">
 
-    <test name="Sanity Tests">
+    <test name="Sanity Test For Create User">
         <classes>
             <class name="com.qa.api.gorest.tests.CreateUserTest"/>
+                    </classes>
+    </test>
+     <test name="Sanity Test For GetUserTest">
+        <classes>
             <class name="com.qa.api.gorest.tests.GetUserTest"/>
+                  </classes>
+    </test>
+     <test name="Sanity Test For UpdateUserTest">
+        <classes>
+             <class name="com.qa.api.gorest.tests.UpdateUserTest"/>
         </classes>
     </test>
 
