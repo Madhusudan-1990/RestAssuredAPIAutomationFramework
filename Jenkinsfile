@@ -27,7 +27,7 @@ stages {
     stage('Checkout API Framework') {
         steps {
             dir('api-framework') {
-                git 'https://github.com/Madhusudan-1990/RestAssuredAPIAutomationFramework.git'
+               git branch: 'main', url: 'https://github.com/Madhusudan-1990/RestAssuredAPIAutomationFramework.git'
             }
         }
     }
