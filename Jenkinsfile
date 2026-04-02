@@ -47,6 +47,21 @@ stages {
             }
         }
     }
+    
+       stage('Sanity API Test - STAGE') {
+        steps {
+            dir('api-framework') {
+                bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml -Denv=stage"
+            }
+        }
+    }
+      stage('Sanity API Test - PROD') {
+        steps {
+            dir('api-framework') {
+                bat "mvn clean test -Dsurefire.suiteXmlFiles=src/test/resources/testrunners/testng_sanity.xml -Denv=prod"
+            }
+        }
+    }
 }
 
 

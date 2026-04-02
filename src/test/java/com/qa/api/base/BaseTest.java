@@ -4,6 +4,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
 import com.qa.api.client.RestClient;
+import com.qa.api.manager.ConfigManager;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
@@ -14,15 +15,15 @@ public class BaseTest
 	protected RestClient restClient;
 	
 	//****************************** API Base URLs *******************************/
-	protected final static String BASE_URL_GOREST = "https://gorest.co.in";
-	protected final static String BASE_URL_CONTACTS = "https://thinking-tester-contact-list.herokuapp.com";
-	protected final static String BASE_URL_RESTFUL = "https://api.restful-api.dev";
-	protected final static String BASE_URL_BASIC_AUTH = "https://the-internet.herokuapp.com";
-	protected final static String BASE_URL_PRODUCTS = "https://fakestoreapi.com";
-	protected final static String BASE_URL_SPOTIFY_ACCOUNT = "https://accounts.spotify.com";
-	protected final static String BASE_URL_SPOTIFY_API = "https://api.spotify.com";
-	protected final static String BASE_URL_ERGAST_CIRCUIT = "http://ergast.com";
-	
+	protected  static String BASE_URL_GOREST;
+	protected  static String BASE_URL_CONTACTS;
+	protected  static String BASE_URL_RESTFUL;
+	protected  static String BASE_URL_BASIC_AUTH;
+	protected  static String BASE_URL_PRODUCTS;
+	protected  static String BASE_URL_SPOTIFY_ACCOUNT;
+	protected  static String BASE_URL_SPOTIFY_API;
+	protected  static String BASE_URL_ERGAST_CIRCUIT;
+
 	
 	//****************************** API EndPoints *******************************/
 	protected final static String GOREST_USERS_ENDPOINT = "/public/v2/users";
@@ -35,10 +36,18 @@ public class BaseTest
 	protected final static String SPOTIFY_API_ENDPOINT = "/v1/albums/4aawyAB9vmqN3uQ7FjRGTy";
 	protected final static String ERGAST_CIRCUIT_ENDPOINT = "/api/f1/2017/circuits.xml";
 	
-	@BeforeSuite
-	public void setupAllureReport()
+	@BeforeTest
+	public void initSetup()
 	{
 		RestAssured.filters(new AllureRestAssured());
+		BASE_URL_GOREST = ConfigManager.get("baseurl.gorest").trim();
+		BASE_URL_CONTACTS = ConfigManager.get("baseurl.contact").trim();
+		BASE_URL_RESTFUL = ConfigManager.get("baseurl.restful").trim();
+		BASE_URL_BASIC_AUTH = ConfigManager.get("baseurl.basicsauth").trim();
+		BASE_URL_PRODUCTS = ConfigManager.get("baseurl.products").trim();
+		BASE_URL_SPOTIFY_ACCOUNT = ConfigManager.get("baseurl.spotifyaccount").trim();
+		BASE_URL_SPOTIFY_API = ConfigManager.get("baseurl.spotifyapi").trim();
+		BASE_URL_ERGAST_CIRCUIT = ConfigManager.get("baseurl.circuit").trim();
 	}
 	
 	//3a

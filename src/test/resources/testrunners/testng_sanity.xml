@@ -17,5 +17,11 @@
              <class name="com.qa.api.gorest.tests.UpdateUserTest"/>
         </classes>
     </test>
+    
+        <test name="Sanity Test For ContactUserTest">
+        <classes>
+             <class name="com.api.contacts.tests.ContactsAPITest"/>
+        </classes>
+    </test>
 
 </suite>
