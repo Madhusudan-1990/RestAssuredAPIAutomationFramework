@@ -1,6 +1,7 @@
 package com.qa.api.base;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 
 import com.qa.api.client.RestClient;
 
@@ -41,7 +42,7 @@ public class BaseTest
 	}
 	
 	//3a
-	@BeforeMethod(alwaysRun = true)
+	@BeforeTest
 	public void setup() 
 	{
 			restClient = new RestClient();

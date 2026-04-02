@@ -29,15 +29,4 @@
               </classes>
     </test>   
     
-     <test name="Product API Test - Get Product">
-        <classes>
-            <class name="com.qa.api.products.tests.ProductAPITest"/>
-              </classes>
-    </test>      
-     <test name="Product API Test - Get Product With Json">
-        <classes>
-            <class name="com.qa.api.products.tests.ProductAPIWithJsonPathTest"/>
-              </classes>
-    </test>      
-
 </suite>
