@@ -16,7 +16,7 @@ public class MockCreateUserAPITest extends BaseTest
 	@Test
 	public void createFakeUserTests() throws IOException
 	{
-		
+		APIMocks.defineCreateUserMock();
 		String dummyUserJson = APIMocks.updateJsonFileWithRandomId();
 		Response response = restClient.post(BASE_URL_MOCK_SERVER, MOCK_SERVER_ENDPOINT, dummyUserJson, null,null, AuthType.NO_AUTH, ContentType.JSON);
 		response.then().assertThat().statusCode(201);
