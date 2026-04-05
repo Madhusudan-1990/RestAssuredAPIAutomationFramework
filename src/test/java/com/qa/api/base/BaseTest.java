@@ -62,9 +62,9 @@ public class BaseTest
 			WireMockSetup.startWireMockServer();
 	}
 	
-//	@AfterTest
-//	public void stopMockServer() 
-//	{
-//			WireMockSetup.stopWireMockServer();
-//	}
+	@AfterTest
+	public void stopMockServer() 
+	{
+			WireMockSetup.stopWireMockServer();
+	}
 }
