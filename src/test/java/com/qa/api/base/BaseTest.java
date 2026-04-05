@@ -1,10 +1,12 @@
 package com.qa.api.base;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 
 import com.qa.api.client.RestClient;
 import com.qa.api.manager.ConfigManager;
+import com.qa.api.mocking.WireMockSetup;
 
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
@@ -23,6 +25,7 @@ public class BaseTest
 	protected  static String BASE_URL_SPOTIFY_ACCOUNT;
 	protected  static String BASE_URL_SPOTIFY_API;
 	protected  static String BASE_URL_ERGAST_CIRCUIT;
+	protected  static String BASE_URL_MOCK_SERVER = "http://localhost:8089"; 
 
 	
 	//****************************** API EndPoints *******************************/
@@ -35,6 +38,7 @@ public class BaseTest
 	protected final static String SPOTIFY_ACCOUNT_ENDPOINT = "/api/token";
 	protected final static String SPOTIFY_API_ENDPOINT = "/v1/albums/4aawyAB9vmqN3uQ7FjRGTy";
 	protected final static String ERGAST_CIRCUIT_ENDPOINT = "/api/f1/2017/circuits.xml";
+	protected final static String MOCK_SERVER_ENDPOINT = "/api/users";
 	
 	@BeforeTest
 	public void initSetup()
@@ -55,5 +59,12 @@ public class BaseTest
 	public void setup() 
 	{
 			restClient = new RestClient();
+			WireMockSetup.startWireMockServer();
 	}
+	
+//	@AfterTest
+//	public void stopMockServer() 
+//	{
+//			WireMockSetup.stopWireMockServer();
+//	}
 }
