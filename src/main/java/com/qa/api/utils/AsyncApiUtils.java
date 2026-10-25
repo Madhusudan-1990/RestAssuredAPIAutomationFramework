@@ -10,10 +10,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 /**
- * Reusable helper for polling APIs whose processing continues asynchronously.
- *
- * Example: a workflow returns status 202 when accepted and later reaches
- * a business status such as 6090 when complete.
+ * Reusable polling helper for asynchronous API workflows.
  */
 public class AsyncApiUtils {
 
@@ -24,17 +21,10 @@ public class AsyncApiUtils {
     }
 
     /**
-     * Polls a status endpoint until the expected status is observed or timeout.
+     * Polls the status endpoint until the expected status is reached or timeout.
      *
-     * @param baseUrl API base URL
-     * @param endpoint status endpoint, for example "/wave-runs/{waveRunId}"
-     * @param waveRunId ID used to track the asynchronous run
-     * @param statusJsonPath JSON path to the status field, for example "status"
-     * @param expectedStatus status that means the workflow is complete
-     * @param timeoutSeconds maximum overall wait time
-     * @param pollIntervalMillis delay between checks
-     * @param authType authentication configured by the framework
-     * @return the final observed status
+     * Example endpoint: "/wave-runs/{waveRunId}"
+     * Example status JSON path: "status"
      */
     public int waitForStatus(
             String baseUrl,
@@ -60,10 +50,14 @@ public class AsyncApiUtils {
                     authType,
                     ContentType.JSON);
 
-            currentStatus = response.jsonPath().getInt(statusJsonPath);
+            // The existing RestClient allows GET responses of 200 or 404.
+            // A 404 can be temporary while an async resource becomes available.
+            if (response.getStatusCode() == 200) {
+                currentStatus = response.jsonPath().getInt(statusJsonPath);
 
-            if (currentStatus == expectedStatus) {
-                return currentStatus;
+                if (currentStatus == expectedStatus) {
+                    return currentStatus;
+                }
             }
 
             try {
