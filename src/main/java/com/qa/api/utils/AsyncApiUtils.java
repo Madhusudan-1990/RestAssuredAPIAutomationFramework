@@ -1,7 +1,6 @@
 package com.qa.api.utils;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 import com.qa.api.client.RestClient;
 import com.qa.api.constants.AuthType;
@@ -10,7 +9,7 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 /**
- * Reusable polling helper for asynchronous API workflows.
+ * Simple reusable polling utility for asynchronous API workflows.
  */
 public class AsyncApiUtils {
 
@@ -20,58 +19,38 @@ public class AsyncApiUtils {
         this.restClient = restClient;
     }
 
-    /**
-     * Polls the status endpoint until the expected status is reached or timeout.
-     *
-     * Example endpoint: "/wave-runs/{waveRunId}"
-     * Example status JSON path: "status"
-     */
-    public int waitForStatus(
-            String baseUrl,
-            String endpoint,
-            String waveRunId,
-            String statusJsonPath,
-            int expectedStatus,
-            int timeoutSeconds,
-            long pollIntervalMillis,
-            AuthType authType) {
+    public int waitForWaveRunCompletion(String baseUrl,
+                                        String endpoint,
+                                        String waveRunId) {
+        int status = -1;
 
-        long deadline = System.nanoTime()
-                + TimeUnit.SECONDS.toNanos(timeoutSeconds);
-
-        int currentStatus = -1;
-
-        while (System.nanoTime() < deadline) {
+        // Check up to 30 times, waiting 2 seconds between checks.
+        for (int attempt = 0; attempt < 30; attempt++) {
             Response response = restClient.get(
                     baseUrl,
                     endpoint,
                     Collections.<String, String>emptyMap(),
                     Collections.singletonMap("waveRunId", waveRunId),
-                    authType,
+                    AuthType.BEARER_TOKEN,
                     ContentType.JSON);
 
-            // The existing RestClient allows GET responses of 200 or 404.
-            // A 404 can be temporary while an async resource becomes available.
             if (response.getStatusCode() == 200) {
-                currentStatus = response.jsonPath().getInt(statusJsonPath);
+                status = response.jsonPath().getInt("status");
 
-                if (currentStatus == expectedStatus) {
-                    return currentStatus;
+                if (status == 6090) {
+                    return status;
                 }
             }
 
             try {
-                Thread.sleep(pollIntervalMillis);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new IllegalStateException(
-                        "Polling was interrupted for wave run " + waveRunId, e);
+                throw new RuntimeException("Wave run polling interrupted", e);
             }
         }
 
         throw new AssertionError(
-                "Timed out waiting for wave run " + waveRunId
-                + ". Expected status: " + expectedStatus
-                + ", last observed status: " + currentStatus);
+                "Wave run did not reach 6090. Last status: " + status);
     }
 }
